@@ -151,7 +151,7 @@ func main() {
 
 	CSRF := csrf.Protect([]byte("_yJ3~mY#i{l}=mt^kIUfxW9o:Z~ydF(."))
 
-	go http.ListenAndServe(":3001", CSRF(muxRouter))
+	go http.ListenAndServe(":3000", CSRF(muxRouter))
 
 	log.Println("Servidor Iniciado http://127.0.0.1:3000/, presiona <ENTER> para salir.")
 	fmt.Scanln()
