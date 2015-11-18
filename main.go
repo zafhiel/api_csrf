@@ -27,12 +27,6 @@ var htmlTemplate string = `<!DOCTYPE html>
             </tr>
         </thead>
         <tbody  id="cuerpo_tabla">
-            {{range $movie := .movies}}
-            <tr >
-              <td>{{ $movie.Title }}</td>
-              <td>{{ $movie.Year }}</td>
-            </tr>
-            {{end}}
         </tbody>
     </table>
     <button OnClick="Save();" style="margin: 2em 0 0 2em">Save Test Movie</button>
@@ -65,7 +59,7 @@ var htmlTemplate string = `<!DOCTYPE html>
         return cookieValue;
     }
 
-	// FIXME: I try two methods to send csrftoken, but don't work :'(
+    // FIXME: I try two methods to send csrftoken, but don't work :'(
 
     //var csrftoken = getCookie('csrftoken');
     var csrftoken = getCookie('{{.CsrfToken}}');
@@ -93,11 +87,11 @@ var htmlTemplate string = `<!DOCTYPE html>
             async: false,
             data: JSON.stringify(objetos)
         }).error(function (re){
-            console.log("oh cmon!");
+            console.log("POST error, oh cmon!");
             console.log(re);
         })
         .success(function (rs) {
-            console.log("oh yeah!");
+            console.log("POST Work! oh yeah!");
             console.log(rs);
         });
     }
@@ -116,7 +110,7 @@ var htmlTemplate string = `<!DOCTYPE html>
                     if (c.status == 302){
                         var moviesStr;
                         var movieArray = c.responseJSON;
-                        for (var i = 0; i < movieArray.length; i++) {
+                        for(i in movieArray){
                             moviesStr = String.format(plantilla, movieArray[i].title,
                                                                  movieArray[i].year);
                             $("#cuerpo_tabla").append(moviesStr);
@@ -163,8 +157,7 @@ func getMovies(w http.ResponseWriter, req *http.Request) {
 	w.Header().Add("Content Type", "text/html")
 
 	t, _ := template.New("html").Parse(htmlTemplate)
-	params := map[string]interface{}{"movies": movies,
-		                             "CsrfToken": csrf.Token(req),}
+	params := map[string]interface{}{"CsrfToken": csrf.Token(req),}
 	t.Execute(w, params)
 
 }
